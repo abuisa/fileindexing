@@ -103,8 +103,10 @@
 <!-- ========================================== -->
 
 <form method="POST" action="listallfile.php">
-	<b>Cari Text : </b><input type="text" id="nomor" name="sc" value="" placeholder="type string here" style="height: 24px; width: 260px;"> &nbsp; 
-	<button name="bsc" onclick="openInNewTab()">Cari !</button>
+	<b>Cari Text : </b>
+	<input type="text" id="nomor" name="sc" value="" placeholder="type string here" style="height: 24px; width: 260px;"> 
+	<input type="text" id="nor" name="nor" value="" placeholder="30 Rows" style="height: 24px; width: 60px;"> 
+	<button name="bsc" onclick="openInNewTab()">Cari !/Show</button>
 </form>
 
 
@@ -114,11 +116,11 @@
 	{
 		if (isset($_POST["sc"])){$_SESSION["sc"] = $_POST["sc"];}
 		if ($_SESSION["sc"] !== NULL){$sc = $_SESSION["sc"];}
+		if (isset($_POST["nor"])){$_SESSION["nor"] = $_POST["nor"];}
 	}
 	if ((isset($_POST['bsc'])) || (isset($_GET['page'])))
 	{
 
-			$sc = $_SESSION["sc"] ;
 
 //--- START HERE -------------------------------------------------------------		
 			#cari($sc);
@@ -126,13 +128,18 @@
 		  	global $link;
 			$tb = 'tfilelist';
 			$page = (int) (!isset($_GET["page"]) ? 1 : $_GET["page"]);
-		
-			$limit = 30;
+			
+			if (!empty($_SESSION["nor"])){
+				$limit = $_SESSION["nor"];
+			}else {
+				$limit = 30;
+			}			
 			$startpoint = ($page * $limit) - $limit;
+			
 
+			$sc = $_SESSION["sc"] ;
 			$cr = str_replace(' ', '%', $sc);
-
-			$statement = "`$tb` WHERE (flist LIKE '%$cr%' OR hash LIKE '%$cr%' OR addt LIKE '%$cr%' OR ket LIKE '%$cr%') ORDER BY flist ASC ";
+			$statement = "`$tb` WHERE (flist LIKE '%$cr%' OR hash LIKE '%$cr%' OR addt LIKE '%$cr%' OR ket LIKE '%$cr%') ORDER BY flist ASC ";				
 
 			#echo 'PAGE : '.$page;
 
@@ -151,18 +158,19 @@
 					<td> <b>MD5 Hash</b></td></tr>';
 
 			while ($row = mysqli_fetch_assoc($query)) {
+			//-----------------------------------------------------
+				$fl0 = $row['id'];
+				$fl1 = $row['flist'];
+				$fl2 = $row['hash'];
+				$fl3 = $row['addt'];
+				$fl4 = $row['ket'];
 			  //--------------------------
 			  $i = $i+1;
-			  $cr = str_replace('%', ' ', $cr);
-			  $acr = explode(' ', $cr);
-			  $jm=count($acr);
-			  //-----------------------------------------------------
-			  $fl0 = $row['id'];
-			  $fl1 = $row['flist'];
-			  $fl2 = $row['hash'];
-			  $fl3 = $row['addt'];
-			  $fl4 = $row['ket'];
-
+			if (!empty($cr)){
+				$cr = str_replace('%', ' ', $cr);
+				$acr = explode(' ', $cr);
+				$jm=count($acr);
+		
 			  //---------MEWARNAI STRING YANG DICARI---------------------
 			  for ($x = 0; $x < $jm; $x++)
 			  {
@@ -173,6 +181,7 @@
 				  $fl4 = str_ireplace($acr[$x], cc($acr[$x]), $fl4);
 			  }
 			//------------TAMPILKAN DATA -----------------	
+			}
 			/*
 			  echo'
 			  <tr>
