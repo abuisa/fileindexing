@@ -11,7 +11,8 @@
 	function cc($cx){
 	  return('<label class="cr">'.$cx.'</label>');
 	} 
-		//=========================
+//=========================
+
 
 ?>
 <html>
@@ -95,6 +96,10 @@
 		document.body.scrollTop = 0;
 		document.documentElement.scrollTop = 0;
 	}
+//=========================
+	function msg(fs){
+		 alert(fs);
+	}
 
 </script>
 </head>
@@ -106,11 +111,17 @@
 	<b>Cari Text : </b>
 	<input type="text" id="nomor" name="sc" value="" placeholder="type string here" style="height: 24px; width: 260px;"> 
 	<input type="text" id="nor" name="nor" value="" placeholder="30 Rows" style="height: 24px; width: 60px;"> 
-	<button name="bsc" onclick="openInNewTab()">Cari !/Show</button>
+	<button name="bsc">Cari !/Show</button>
 </form>
 
 
 <?php
+	function gfsize($fn){
+		$cmd = shell_exec("./gfsize.sh '".$fn."'");
+		#echo "$cmd";
+		return $cmd;
+	}
+
 
 	if ((isset($_POST['bsc'])) || (isset($_GET['page'])))
 	{
@@ -141,6 +152,7 @@
 			$cr = str_replace(' ', '%', $sc);
 			$statement = "`$tb` WHERE (flist LIKE '%$cr%' OR hash LIKE '%$cr%' OR addt LIKE '%$cr%' OR ket LIKE '%$cr%') ORDER BY flist ASC ";				
 
+
 			#echo 'PAGE : '.$page;
 
 			$i = ($limit * $page) - $limit;
@@ -167,6 +179,7 @@
 			  //--------------------------
 			  $i = $i+1;
 			if (!empty($cr)){
+
 				$cr = str_replace('%', ' ', $cr);
 				$acr = explode(' ', $cr);
 				$jm=count($acr);
@@ -190,13 +203,15 @@
 				<td> '.$fl2.'</td>
 				<td>'.$fl3.'</td>
 				<td>'.$fl4.'</td>
-			  </tr>';
+			  </tr>'; 				<td> <a href="#" onclick="msg(``'.$fl1.'``)">'.$fl1.'</a></td>
 			*/
 			//--------- TAMPILKAN DATA HANYA DUA BARI --------------	
 			  echo '<tr>
-				<td>  '.$i.'</td>
-				<td> '.$fl1.'</td>
-				<td> '.$fl2.'</td>
+				<td>  '.$i.'</td>';
+			  #echo'	<td> '.$fl1.'</td>';
+			  #echo'<td> <a href="#" onclick="msg(`'.$row['flist'].'`)">'.$fl1.'</a></td>'; # yang ini OK
+				echo'<td> <a href="#" onclick="msg(`'.gfsize($row['flist']).'`)">'.$fl1.'</a></td>';
+			  echo'	<td> '.$fl2.'</td>
 			  </tr>';	 
 			}
 
