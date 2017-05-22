@@ -1,9 +1,9 @@
 <?php
-
+  	header('Content-Type: text/html; charset=utf-8');
   	session_start();
 	//include_once ('conf.php');
 	include_once ('pagin.php');
-  	header('Content-Type: text/html; charset=utf-8');
+
 //---------------
 #if (isset($_POST["cr"])){$_SESSION["cr"] = $_POST["cr"];}
 #if ($_SESSION["cr"] !== NULL){$cr = $_SESSION["cr"];}
@@ -117,7 +117,8 @@
 
 <?php
 	function gfsize($fn){
-		$cmd = shell_exec("./gfsize.sh '".$fn."'");
+		#$cmd = shell_exec("./gfsize.sh '".$fn."'"); # ini sudah OK, hanya sebagian tidak keluar hasilnya
+		$cmd = shell_exec('./gfsize.sh '.$fn.'');
 		#echo "$cmd";
 		return $cmd;
 	}
@@ -166,7 +167,7 @@
 					<td> <b>MD5 Hash</b>
 					</td><td>Date</td><td>KET</td></tr>';*/
 			echo '	<tr bgcolor="darkgray"><td>ID</td>
-					<td> <b>File Location</b></td>
+					<td> <b>File Location</b></td><td><b>Size</b></td>
 					<td> <b>MD5 Hash</b></td></tr>';
 
 			while ($row = mysqli_fetch_assoc($query)) {
@@ -210,14 +211,15 @@
 				<td>  '.$i.'</td>';
 			  #echo'	<td> '.$fl1.'</td>';
 			  #echo'<td> <a href="#" onclick="msg(`'.$row['flist'].'`)">'.$fl1.'</a></td>'; # yang ini OK
-				echo'<td> <a href="#" onclick="msg(`'.gfsize($row['flist']).'`)">'.$fl1.'</a></td>';
+				echo'<td> <a href="#" onclick="msg(`'.$row['flist'].'`)">'.$fl1.'</a></td>';
+				echo'<td> '.gfsize($row['flist']).'</td>';
 			  echo'	<td> '.$fl2.'</td>
 			  </tr>';	 
 			}
 
 //--- END HERE -------------------------------------------------------------		
 #		echo '<tr bgcolor="darkgray"><td colspan="5"><center><b> --- END --- </b></center></td></tr>';
-		echo '<tr bgcolor="darkgray"><td colspan="3"><center><b> --- END --- </b></center></td></tr>';
+		echo '<tr bgcolor="darkgray"><td colspan="4"><center><b> --- END --- </b></center></td></tr>';
 		echo "</table>";
 
 	}
